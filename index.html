@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>CreditLab · Interview Prep</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #080b0e;
+  --s1: #0e1219;
+  --s2: #131822;
+  --border: #1d2535;
+  --a: #c8ff00;
+  --a2: #00c8ff;
+  --a3: #ff6b35;
+  --text: #e4e8f0;
+  --dim: #6b7689;
+  --muted: #2e3748;
+  --red: #ff3d5a;
+  --gold: #ffc740;
+  --green: #00e87a;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;font-size:15px}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.65;overflow-x:hidden;padding-bottom:80px}
+
+/* ── TOP NAV ── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(8,11,14,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 16px;gap:12px}
+.topbar-logo{font-weight:800;font-size:.95rem;color:var(--a);letter-spacing:.06em;flex-shrink:0}
+.topbar-logo span{color:var(--dim);font-weight:400}
+.topbar-right{margin-left:auto;display:flex;gap:8px}
+.icon-btn{width:36px;height:36px;border-radius:8px;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:1.1rem}
+
+/* ── BOTTOM TABS ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(8,11,14,.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;height:64px;padding-bottom:env(safe-area-inset-bottom)}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;font-size:.58rem;color:var(--dim);letter-spacing:.04em;text-transform:uppercase;font-weight:600;transition:color .2s;padding:0 4px;border:none;background:none}
+.bnav-btn.active{color:var(--a)}
+.bnav-btn svg{width:20px;height:20px;stroke-width:1.8}
+
+/* ── PAGES ── */
+.page{display:none;padding:68px 0 16px;min-height:100vh}
+.page.active{display:block}
+.page-inner{padding:0 16px}
+
+/* ── MODULE CARDS (home) ── */
+.home-header{padding:16px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.home-header h1{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.home-header h1 em{font-style:normal;color:var(--a)}
+.home-header p{font-size:.8rem;color:var(--dim);margin-top:6px;line-height:1.5}
+.stats-row{display:flex;gap:0;border:1px solid var(--border);margin:12px 16px}
+.stat-box{flex:1;padding:10px 8px;text-align:center;border-right:1px solid var(--border)}
+.stat-box:last-child{border-right:none}
+.stat-num{font-size:1.4rem;font-weight:800;color:var(--a);display:block;line-height:1}
+.stat-lbl{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+
+.module-list{padding:0 16px}
+.module-card{background:var(--s1);border:1px solid var(--border);margin-bottom:3px;display:flex;align-items:center;padding:14px 16px;cursor:pointer;transition:background .15s;border-radius:0;text-decoration:none;color:inherit}
+.module-card:active{background:var(--s2)}
+.module-num{font-size:.65rem;color:var(--dim);font-weight:700;letter-spacing:.1em;min-width:28px}
+.module-title{font-weight:700;font-size:.9rem;flex:1}
+.module-tag{font-size:.58rem;padding:2px 7px;border:1px solid var(--border);color:var(--dim);border-radius:2px;margin-right:8px;white-space:nowrap}
+.module-arrow{color:var(--dim);font-size:.8rem}
+
+/* ── MODULE PAGE ── */
+.mod-header{background:var(--s1);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:10px;margin-bottom:0}
+.mod-back{font-size:1.2rem;cursor:pointer;color:var(--a);width:32px;height:32px;display:flex;align-items:center;justify-content:center}
+.mod-title{font-weight:800;font-size:1rem;letter-spacing:-.01em}
+.mod-num{font-size:.62rem;color:var(--dim);letter-spacing:.1em}
+.mod-content{padding:0 16px 16px}
+
+/* ── SECTION TITLES ── */
+.sec-label{font-size:.6rem;color:var(--a);letter-spacing:.18em;text-transform:uppercase;margin:20px 0 6px;display:flex;align-items:center;gap:6px}
+.sec-label::before{content:'';width:14px;height:1px;background:var(--a)}
+h2.sec-title{font-size:1.25rem;font-weight:800;letter-spacing:-.02em;margin-bottom:12px;line-height:1.15}
+h3.sub-title{font-size:.95rem;font-weight:700;margin:16px 0 8px;letter-spacing:-.01em}
+p.body-text{font-size:.88rem;line-height:1.7;color:var(--text);margin-bottom:10px}
+
+/* ── FORMULA BOX ── */
+.fbox{background:var(--s1);border:1px solid var(--border);border-left:3px solid var(--a);padding:12px 14px;margin:10px 0;overflow-x:auto;border-radius:0}
+.fbox.blue{border-left-color:var(--a2)}
+.fbox.red{border-left-color:var(--red)}
+.fbox.gold{border-left-color:var(--gold)}
+.fbox.green{border-left-color:var(--green)}
+.fbox-title{font-size:.6rem;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px}
+.fbox-math{font-size:.82rem;font-family:Georgia,serif;line-height:1.7}
+.fbox-note{font-size:.75rem;color:var(--dim);margin-top:6px;line-height:1.5}
+
+/* ── CALLOUT ── */
+.callout{background:rgba(200,255,0,.04);border:1px solid rgba(200,255,0,.15);padding:10px 13px;margin:10px 0;font-size:.8rem;color:var(--a);line-height:1.6;border-radius:0}
+.callout.red{background:rgba(255,61,90,.04);border-color:rgba(255,61,90,.15);color:var(--red)}
+.callout.blue{background:rgba(0,200,255,.04);border-color:rgba(0,200,255,.15);color:var(--a2)}
+.callout.gold{background:rgba(255,199,64,.04);border-color:rgba(255,199,64,.15);color:var(--gold)}
+
+/* ── ACCORDION ── */
+.acc-item{border:1px solid var(--border);margin-bottom:3px}
+.acc-head{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;cursor:pointer;background:var(--s1);font-weight:700;font-size:.86rem;line-height:1.3;user-select:none}
+.acc-head:active{background:var(--s2)}
+.acc-arrow{color:var(--a);font-size:1.1rem;transition:transform .25s;flex-shrink:0;margin-left:10px}
+.acc-body{display:none;padding:13px 14px;border-top:1px solid var(--border);font-size:.84rem;line-height:1.7}
+.acc-item.open .acc-arrow{transform:rotate(45deg)}
+.acc-item.open .acc-body{display:block}
+
+/* ── TABS ── */
+.tab-btns{display:flex;overflow-x:auto;border-bottom:1px solid var(--border);scrollbar-width:none;margin:0 -16px;padding:0 16px;gap:0}
+.tab-btns::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:9px 14px;font-size:.72rem;color:var(--dim);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;letter-spacing:.04em;font-weight:600}
+.tab-btn.active{color:var(--a);border-bottom-color:var(--a)}
+.tab-panel{display:none;padding-top:14px}
+.tab-panel.active{display:block}
+
+/* ── DATA TABLE ── */
+.dtable{width:100%;border-collapse:collapse;font-size:.75rem;margin:10px 0;overflow:auto;display:block}
+.dtable th{background:var(--s2);color:var(--dim);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:.6rem;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+.dtable td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text)}
+.dtable tr:last-child td{border-bottom:none}
+
+/* ── PILL TAGS ── */
+.pill{display:inline-block;padding:1px 7px;border:1px solid;font-size:.6rem;letter-spacing:.05em;border-radius:2px}
+.pill.g{border-color:var(--green);color:var(--green)}
+.pill.r{border-color:var(--red);color:var(--red)}
+.pill.go{border-color:var(--gold);color:var(--gold)}
+.pill.b{border-color:var(--a2);color:var(--a2)}
+
+/* ── CODE BLOCK ── */
+.code{background:#060810;border:1px solid var(--border);border-left:3px solid var(--a3);padding:13px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.72rem;line-height:1.85;overflow-x:auto;margin:10px 0;color:#c9d1d9;border-radius:0}
+.ck{color:#ff7b72}.cf{color:#d2a8ff}.cs{color:#a5d6ff}.cc{color:#4a5568;font-style:italic}.cn{color:#79c0ff}.cv{color:#ffa657}
+
+/* ── CHART ── */
+.chart-wrap{background:var(--s1);border:1px solid var(--border);padding:12px;margin:12px 0;border-radius:0}
+.chart-wrap canvas{max-height:220px}
+
+/* ── PRICER ── */
+.pricer-out{background:var(--s1);border:1px solid var(--border);padding:13px;margin-bottom:12px}
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:12px}
+.metric{background:var(--s1);padding:10px 12px}
+.m-label{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.m-value{font-size:1.2rem;font-weight:800;color:var(--a);line-height:1}
+.m-value.neg{color:var(--red)}
+.slider-group{margin-bottom:14px}
+.slider-label{display:flex;justify-content:space-between;font-size:.74rem;color:var(--dim);margin-bottom:5px;font-weight:600}
+.slider-label span{color:var(--a);font-weight:700}
+input[type=range]{width:100%;-webkit-appearance:none;height:3px;background:var(--border);outline:none;cursor:pointer;border-radius:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--a);border-radius:0;cursor:pointer}
+.type-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.type-btn{font-size:.68rem;padding:6px 11px;border:1px solid var(--border);background:var(--s2);color:var(--dim);cursor:pointer;font-weight:700;letter-spacing:.04em;border-radius:0;flex-shrink:0}
+.type-btn.active{background:var(--a);color:#000;border-color:var(--a)}
+
+/* ── FLASHCARDS ── */
+.fc-card{background:var(--s1);border:1px solid var(--border);margin-bottom:3px}
+.fc-q{padding:13px 14px;cursor:pointer;font-weight:700;font-size:.86rem;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;line-height:1.35}
+.fc-q:active{background:var(--s2)}
+.fc-arrow{color:var(--a);flex-shrink:0;font-size:1rem;transition:transform .25s}
+.fc-a{display:none;padding:12px 14px;border-top:1px solid var(--border);font-size:.83rem;line-height:1.7;background:var(--s2)}
+.fc-card.open .fc-arrow{transform:rotate(45deg)}
+.fc-card.open .fc-a{display:block}
+
+/* ── TIMELINE ── */
+.tl{padding-left:20px;position:relative;margin:10px 0}
+.tl::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:1px;background:var(--border)}
+.tl-item{position:relative;padding-bottom:14px;font-size:.84rem;line-height:1.65}
+.tl-item::before{content:'';position:absolute;left:-20px;top:7px;width:7px;height:7px;background:var(--a);transform:translateX(-3px)}
+.tl-label{font-size:.6rem;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;font-weight:700}
+
+/* ── CARDS GRID ── */
+.cards{display:flex;flex-direction:column;gap:3px;margin:10px 0}
+.card{background:var(--s1);border:1px solid var(--border);padding:14px}
+.card-tag{font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.card h3{font-size:.9rem;font-weight:700;margin-bottom:7px}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:18px 0}
+
+/* ── SEARCH ── */
+.search-wrap{padding:12px 16px;border-bottom:1px solid var(--border)}
+.search-box{width:100%;background:var(--s1);border:1px solid var(--border);padding:10px 14px;color:var(--text);font-size:.9rem;border-radius:0;outline:none}
+.search-box::placeholder{color:var(--dim)}
+.search-box:focus{border-color:var(--a)}
+.no-results{text-align:center;color:var(--dim);font-size:.85rem;padding:30px 0}
+.fc-card.hidden{display:none}
+
+/* ── MODAL (export) ── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:flex-end}
+.modal-overlay.open{display:flex}
+.modal{background:var(--s1);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:24px 20px;padding-bottom:calc(24px + env(safe-area-inset-bottom));width:100%;max-height:70vh;overflow-y:auto}
+.modal h3{font-size:1rem;font-weight:800;margin-bottom:16px}
+.modal-btn{width:100%;padding:14px;margin-bottom:8px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-size:.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;border-radius:0;text-align:left}
+.modal-btn:active{background:var(--muted)}
+.modal-btn-icon{width:36px;height:36px;background:var(--s1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.modal-cancel{width:100%;padding:14px;margin-top:4px;border:1px solid var(--border);background:transparent;color:var(--dim);font-size:.85rem;font-weight:700;cursor:pointer;border-radius:0}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">CR<span>EDIT</span>LAB</div>
+  <div class="topbar-right">
+    <div class="icon-btn" onclick="openExport()" title="Exporter">💾</div>
+    <div class="icon-btn" onclick="toggleSearch()" title="Rechercher">🔍</div>
+  </div>
+</div>
+
+<!-- ══ PAGE: HOME ══ -->
+<div class="page active" id="page-home">
+  <div class="home-header">
+    <h1>Dérivés <em>Crédit</em><br>Interview Prep</h1>
+    <p>CLN · Tranches · Copule Gaussienne · iTraxx · Digital CDS · Pricer Live</p>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box"><span class="stat-num">12</span><div class="stat-lbl">Modules</div></div>
+    <div class="stat-box"><span class="stat-num">40+</span><div class="stat-lbl">Formules</div></div>
+    <div class="stat-box"><span class="stat-num">3</span><div class="stat-lbl">Pricers</div></div>
+  </div>
+  <div class="module-list" id="module-list">
+    <!-- Generated by JS -->
+  </div>
+</div>
+
+<!-- ══ PAGE: MODULE ══ -->
+<div class="page" id="page-module">
+  <div class="mod-header">
+    <div class="mod-back" onclick="goHome()">←</div>
+    <div>
+      <div class="mod-num" id="mod-num-display"></div>
+      <div class="mod-title" id="mod-title-display"></div>
+    </div>
+  </div>
+  <div class="mod-content" id="mod-content"></div>
+</div>
+
+<!-- ══ PAGE: PRICER ══ -->
+<div class="page" id="page-pricer">
+  <div class="page-inner">
+    <div class="sec-label" style="margin-top:12px">Live Pricer</div>
+    <h2 class="sec-title">CLN Pricer Interactif</h2>
+
+    <div class="type-btns">
+      <button class="type-btn active" id="btn-van" onclick="setCLNType('van')">VANILLA</button>
+      <button class="type-btn" id="btn-zc" onclick="setCLNType('zc')">ZÉRO COUPON</button>
+      <button class="type-btn" id="btn-bon" onclick="setCLNType('bon')">BONUS CLN</button>
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-label">CDS Spread Référence <span id="d-cds">200 bp</span></div>
+      <input type="range" id="s-cds" min="50" max="800" value="200" step="10" oninput="calcCLN()">
+    </div>
+    <div class="slider-group">
+      <div class="slider-label">CDS Spread Émetteur <span id="d-iss">50 bp</span></div>
+      <input type="range" id="s-iss" min="10" max="300" value="50" step="5" oninput="calcCLN()">
+    </div>
+    <div class="slider-group">
+      <div class="slider-label">Recovery Rate <span id="d-rr">40%</span></div>
+      <input type="range" id="s-rr" min="0" max="80" value="40" step="5" oninput="calcCLN()">
+    </div>
+    <div class="slider-group">
+      <div class="slider-label">Taux Risk-Free <span id="d-rf">3.5%</span></div>
+      <input type="range" id="s-rf" min="0" max="8" value="3.5" step="0.1" oninput="calcCLN()">
+    </div>
+    <div class="slider-group">
+      <div class="slider-label">Maturité <span id="d-mat">5 ans</span></div>
+      <input type="range" id="s-mat" min="1" max="15" value="5" step="1" oninput="calcCLN()">
+    </div>
+
+    <div class="metrics-grid" id="metrics-grid">
+      <div class="metric"><div class="m-label">Fair Spread</div><div class="m-value" id="o-spread">—</div></div>
+      <div class="metric"><div class="m-label">Hazard Rate</div><div class="m-value" id="o-lam">—</div></div>
+      <div class="metric"><div class="m-label">Survie à T</div><div class="m-value" id="o-surv">—</div></div>
+      <div class="metric"><div class="m-label">Digital (R=50%)</div><div class="m-value" id="o-dig">—</div></div>
+      <div class="metric"><div class="m-label">PV Protection</div><div class="m-value" id="o-pvp">—</div></div>
+      <div class="metric"><div class="m-label">DV01 (Premium)</div><div class="m-value" id="o-dv">—</div></div>
+    </div>
+
+    <div class="chart-wrap"><canvas id="pricer-chart"></canvas></div>
+  </div>
+</div>
+
+<!-- ══ PAGE: FLASHCARDS ══ -->
+<div class="page" id="page-flash">
+  <div class="search-wrap" id="search-wrap" style="display:none">
+    <input class="search-box" id="search-input" placeholder="Chercher une question..." oninput="filterFC()">
+  </div>
+  <div class="page-inner">
+    <div class="sec-label" style="margin-top:12px">Révision Rapide</div>
+    <h2 class="sec-title">Flash Cards<br>Entretien</h2>
+    <div id="fc-list"></div>
+  </div>
+</div>
+
+<!-- ══ BOTTOM NAV ══ -->
+<nav class="bottom-nav">
+  <button class="bnav-btn active" id="bnav-home" onclick="showPage('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Accueil
+  </button>
+  <button class="bnav-btn" id="bnav-pricer" onclick="showPage('pricer')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    Pricer
+  </button>
+  <button class="bnav-btn" id="bnav-flash" onclick="showPage('flash')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+    Flash
+  </button>
+</nav>
+
+<!-- ══ EXPORT MODAL ══ -->
+<div class="modal-overlay" id="export-modal" onclick="closeExport(event)">
+  <div class="modal" onclick="e=>e.stopPropagation()">
+    <h3>💾 Exporter / Sauvegarder</h3>
+    <button class="modal-btn" onclick="downloadHTML()">
+      <div class="modal-btn-icon">📥</div>
+      <div><div style="font-weight:800">Télécharger (.html)</div><div style="font-size:.75rem;color:var(--dim);font-weight:400;margin-top:2px">Fonctionne hors-ligne, s'ouvre dans Chrome/Safari</div></div>
+    </button>
+    <button class="modal-btn" onclick="shareFile()">
+      <div class="modal-btn-icon">📤</div>
+      <div><div style="font-weight:800">Partager via iOS/Android</div><div style="font-size:.75rem;color:var(--dim);font-weight:400;margin-top:2px">Envoyer par Mail, iCloud Drive, etc.</div></div>
+    </button>
+    <button class="modal-btn" onclick="addToHomeScreen()">
+      <div class="modal-btn-icon">📲</div>
+      <div><div style="font-weight:800">Ajouter à l'écran d'accueil</div><div style="font-size:.75rem;color:var(--dim);font-weight:400;margin-top:2px">Safari → Partager → Sur l'écran d'accueil</div></div>
+    </button>
+    <button class="modal-cancel" onclick="closeExport()">Annuler</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// DATA — MODULES
+// ═══════════════════════════════════════════
+const MODULES = [
+  {
+    num: '01', title: 'CLN Fondamentaux', tag: 'Théorie',
+    content: () => `
+<div class="sec-label">Définition</div>
+<h2 class="sec-title">Credit-Linked Note (CLN)</h2>
+<p class="body-text">Un CLN est la forme <strong>funded</strong> d'un CDS. L'investisseur finance le notionnel → supprime le risque de contrepartie pour la banque. En échange d'un coupon majoré, il vend implicitement une protection crédit sur la référence.</p>
+<div class="callout">↳ CLN = Obligation + CDS vendu. L'investisseur est long du risque crédit de la référence ET de l'émetteur (first-to-default).</div>
+<div class="fbox">
+  <div class="fbox-title">Spread CLN simplifié (balance sheet)</div>
+  <div class="fbox-math">s<sub>CLN</sub> = s<sub>CDS</sub><sup>ref</sup> + s<sub>funding</sub> − coûts</div>
+  <div class="fbox-note">Pour 100M€ : coûts ≈ 0.2bp/an. Pour 10M€ : ≈ 2bp/an.</div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Balance Sheet vs SPV</h3>
+<div class="cards">
+  <div class="card">
+    <div class="card-tag">Structure 1 — Bilan propre</div>
+    <h3>Balance Sheet CLN</h3>
+    <p class="body-text" style="margin:0">Banque émet depuis son propre bilan. Investisseur prend un risque <em>first-to-default</em> sur la référence ET la banque. Spread ≈ CDS<sub>ref</sub> + s<sub>fund</sub> − coûts. Rapide et peu coûteux (€10k setup).</p>
+  </div>
+  <div class="card">
+    <div class="card-tag">Structure 2 — SPV</div>
+    <h3>Special Purpose Vehicle</h3>
+    <p class="body-text" style="margin:0">SPV émet la note, achète collatéral AAA, vend CDS à la banque. Pas de risque de contrepartie sur la banque. Spread = CDS<sub>ref</sub> + s<sub>collat</sub> − frais SPV − gap risk.</p>
+    <div class="fbox blue" style="margin-top:8px">
+      <div class="fbox-math">Gap risk ≈ 2bp pour IG 250bp<br>Frais SPV ≈ 1bp/an (100M)</div>
+    </div>
+  </div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Cash-flows du CLN</h3>
+<p class="body-text">Deux streams de cashflows :</p>
+<div class="fbox">
+  <div class="fbox-title">Stream 1 — Promised cashflows (coupons + pair)</div>
+  <div class="fbox-math">V<sub>prom</sub> = Σ D(t<sub>i</sub>) · S<sub>ref</sub>(t<sub>i</sub>) · S<sub>issuer</sub>(t<sub>i</sub>) · c · Δt</div>
+  <div class="fbox-note">Actualisés au taux LIBOR et pondérés par la survie CONJOINTE.</div>
+</div>
+<div class="fbox blue">
+  <div class="fbox-title">Stream 2 — Recovery contingent</div>
+  <div class="fbox-math">V<sub>cont</sub> = ∫ D(t) · R · S<sub>issuer</sub>(t) · λ<sub>ref</sub>(t) · S<sub>ref</sub>(t) dt</div>
+  <div class="fbox-note">Payé uniquement si la référence défaut AVANT l'émetteur.</div>
+</div>
+<div class="divider"></div>
+<div class="callout gold">⚡ Réponse clé en entretien : «Un CLN c'est un CDS funded. L'investisseur prend un risque First-to-Default sur la référence ET l'émetteur. Le spread = CDS ref + funding spread de l'émetteur.»</div>
+`
+  },
+  {
+    num: '02', title: 'Types de CLN', tag: 'Produits',
+    content: () => `
+<div class="sec-label">Produits</div>
+<h2 class="sec-title">Les Types de CLN</h2>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>CLN Zéro Coupon</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body">
+    <p class="body-text">Aucun coupon intermédiaire. L'investisseur paie un prix sous le pair et reçoit 100 à maturité si pas de défaut. En cas de défaut : reçoit R × Notionnel.</p>
+    <div class="fbox">
+      <div class="fbox-title">Prix ZC CLN</div>
+      <div class="fbox-math">P<sub>ZC</sub> = e<sup>−(r+s)·T</sup> · S(T) + R · (1−S(T)) · e<sup>−r·T/2</sup></div>
+      <div class="fbox-note">Cas d'usage : optimisation fiscale, exposition crédit sans flux intermédiaires.</div>
+    </div>
+  </div>
+</div>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>CLN Bonus / Capital Garanti</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body">
+    <p class="body-text">Garantit le remboursement du pair à maturité. Le coupon est conditionnel à la survie de la référence sur la période de risque (ex : 5 ans). Protection digitale.</p>
+    <div class="fbox">
+      <div class="fbox-title">Equation de pricing (Chaplin 13.1) — maturité 20 ans, risque 5 ans</div>
+      <div class="fbox-math">1 = g·∫<sub>0</sub><sup>5</sup>v(t)·S(t)dt + g·S(5)·∫<sub>5</sub><sup>20</sup>v(t)dt + v(20)</div>
+      <div class="fbox-note">g = coupon inconnu. Pour CDS=200bp, R=30% → enhancement ≈ +50bp sur 20 ans.</div>
+    </div>
+    <div class="fbox green">
+      <div class="fbox-title">Protection digitale à t (Chaplin 13.2)</div>
+      <div class="fbox-math">Dig(t) = g · ∫<sub>t</sub><sup>20</sup> v'(s) ds</div>
+      <div class="fbox-note">Décroît de ~60 à ~50% entre t=0 et t=5. Hedge : vendre N/(1−R) vanilla CDS.</div>
+    </div>
+    <div class="callout">Hedge trader : vendre 78.5M vanilla 5Y CDS (= 55 / 0.7) + swap taux fixe/flottant pour l'investment bank.</div>
+  </div>
+</div>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>CLN Callable — Quel Funding ?</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body">
+    <p class="body-text">Un CLN callable permet à l'émetteur de rembourser anticipativement. Le funding dépend de la volatilité des taux ET du spread crédit.</p>
+    <div class="fbox gold">
+      <div class="fbox-title">Funding d'un callable CLN</div>
+      <div class="fbox-math">s<sub>CLN callable</sub> = s<sub>CDS</sub> + s<sub>fund</sub> − V<sub>call</sub></div>
+      <div class="fbox-note">La valeur du call réduit le spread offert à l'investisseur. V<sub>call</sub> nécessite un modèle taux+crédit conjoint.</div>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-tag">Vol taux lognormal 10%, taux 4%</div>
+        <p class="body-text" style="margin:0">Vol bp ≈ 40bp. Option 1 an ATM ≈ 1.6 pts sur une référence 100bp → basis callable ≈ +40bp vs bullet.</p>
+      </div>
+      <div class="card">
+        <div class="card-tag">Vol spread : 100bp → 85%, 500bp → 50%</div>
+        <p class="body-text" style="margin:0">À haut spread, la vol spread DOMINE. Pas de vol implicite observable sur single-name → pricing conservateur.</p>
+      </div>
+    </div>
+    <div class="callout gold">⚡ Réponse entretien : «Pas de vol implicite spread sur le marché single-name → bid-offer large, modèle conservateur. Pour les indices (iTraxx), les options existent et donnent une vol implicite de référence.»</div>
+  </div>
+</div>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>CLN Funded Tranche CDO</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body">
+    <p class="body-text">Un CLN peut embarquer une protection sur une tranche [a,b] d'un pool de crédits. Le coupon = prime tranche + spread collatéral.</p>
+    <div class="fbox blue">
+      <div class="fbox-title">Payoff tranche [a,b]</div>
+      <div class="fbox-math">L<sub>tranche</sub>(t) = max(0, min(L<sub>pool</sub>(t)−a, b−a))</div>
+      <div class="fbox-note">L<sub>pool</sub> = Σ N<sub>i</sub>(1−R<sub>i</sub>) sur les défauts jusqu'à t.</div>
+    </div>
+  </div>
+</div>
+`
+  },
+  {
+    num: '03', title: 'Settlement European / American', tag: 'Mécanique',
+    content: () => `
+<div class="sec-label">Dénouement</div>
+<h2 class="sec-title">Settlement</h2>
+<div class="cards">
+  <div class="card">
+    <div class="card-tag" style="color:var(--green)">European Style</div>
+    <h3>Settlement Européen</h3>
+    <p class="body-text">Option exercée uniquement à maturité. Plus simple à pricer. Formule de Black :</p>
+    <div class="fbox">
+      <div class="fbox-math">C = S<sub>0</sub>·N(d<sub>1</sub>) − K·e<sup>−rT</sup>·N(d<sub>2</sub>)</div>
+      <div class="fbox-math" style="margin-top:4px">d<sub>1</sub> = [ln(S<sub>0</sub>/K) + σ²T/2] / (σ√T)</div>
+      <div class="fbox-note">S<sub>0</sub>=spread courant, K=spread strike, σ=vol du spread.</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-tag" style="color:var(--gold)">American Style</div>
+    <h3>Settlement Américain</h3>
+    <p class="body-text">Option exercée à tout moment ≤ T. Valeur toujours ≥ européenne. Bonds callables = options américaines sur spread.</p>
+    <div class="fbox gold">
+      <div class="fbox-math">V<sub>Am</sub>(t) ≥ max(V<sub>intrinsic</sub>(t), 0)</div>
+      <div class="fbox-note">Composante américaine vaut +40-100bp vs européen selon la vol spread.</div>
+    </div>
+  </div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Settlement CDS Standard (ISDA)</h3>
+<div class="cards">
+  <div class="card">
+    <div class="card-tag">Physical Settlement (historique)</div>
+    <p class="body-text" style="margin:0">L'acheteur livre un bond delivrable et reçoit 100. Delivery option (CTD) ≈ 5% du CDS premium. Réduit le risque de squeeze.</p>
+  </div>
+  <div class="card">
+    <div class="card-tag">Cash Settlement (post-2009, standard)</div>
+    <p class="body-text" style="margin:0">Auction ISDA détermine R. L'acheteur reçoit (100−R). Plus standardisé. Les CLNs utilisent ce mécanisme pour les triggers.</p>
+  </div>
+</div>
+<div class="divider"></div>
+<div class="callout">⚡ Delivery option ≈ 5% du CDS premium. Facteurs : (1) accrued effect at delivery, (2) post-default illiquidity. Sur un nom avec beaucoup d'obligations delivrables, l'option vaut plus.</div>
+`
+  },
+  {
+    num: '04', title: 'Modèle de Pricing CLN', tag: 'Modèles',
+    content: () => `
+<div class="sec-label">Modélisation</div>
+<h2 class="sec-title">Modèle de Pricing CLN</h2>
+<div class="tab-btns">
+  <button class="tab-btn active" onclick="swTab(this,'t-haz')">Hazard Rate</button>
+  <button class="tab-btn" onclick="swTab(this,'t-cln')">CLN Pricing</button>
+  <button class="tab-btn" onclick="swTab(this,'t-rec')">Recovery</button>
+</div>
+<div id="t-haz" class="tab-panel active">
+  <h3 class="sub-title">Calibration du Hazard Rate</h3>
+  <div class="fbox">
+    <div class="fbox-title">Probabilité de survie (λ constant)</div>
+    <div class="fbox-math">S(t) = e<sup>−λ·t</sup></div>
+  </div>
+  <div class="fbox blue">
+    <div class="fbox-title">Calibration CDS → hazard rate</div>
+    <div class="fbox-math">λ = s<sub>CDS</sub> / (1 − R)</div>
+    <div class="fbox-note">Ex : s=200bp, R=40% → λ = 0.02/0.6 = 333bp<br>Ex : s=200bp, R=0% → λ = 200bp (z-spread = λ si R=0)</div>
+  </div>
+  <div class="fbox green">
+    <div class="fbox-title">Prix CDS (protection buyer)</div>
+    <div class="fbox-math">V = ∫D(t)·S(t)·λ·(1−R) dt − p·∫D(t)·S(t) dt</div>
+    <div class="fbox-note">= Protection leg − Premium leg. À initiation V=0, p = fair spread.</div>
+  </div>
+  <div class="fbox">
+    <div class="fbox-title">Risky Zero Coupon Bond (Chaplin 9.17)</div>
+    <div class="fbox-math">P(t,T) = e<sup>−r(T−t)</sup>[S(T) + R·(1−S(T))]</div>
+    <div class="fbox-note">Si R=0 : z-spread = λ. Si R>0 : z-spread &lt; λ.</div>
+  </div>
+  <div class="chart-wrap"><canvas id="haz-chart"></canvas></div>
+</div>
+<div id="t-cln" class="tab-panel">
+  <h3 class="sub-title">4 Cas de Recovery (Chaplin 13.5.2)</h3>
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)"><span>Cas A — Recovery ref = 0 ET émetteur = 0</span><span class="acc-arrow">+</span></div>
+    <div class="acc-body">
+      <div class="fbox"><div class="fbox-math">V<sub>CLN</sub> ≈ Σ D<sub>LIBOR</sub>(t) · e<sup>−(s<sub>ref</sub>+s<sub>iss</sub>)t</sup> · c · Δt</div><div class="fbox-note">Actualisation au taux LIBOR + somme des deux spreads. Cas de référence.</div></div>
+    </div>
+  </div>
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)"><span>Cas D — Pratique standard</span><span class="acc-arrow">+</span></div>
+    <div class="acc-body">
+      <div class="callout gold">Standard marché : recovery CLN ≈ 0 (non coté, difficile à revendre). Recovery dette émetteur ≈ 40%.</div>
+      <div class="fbox gold"><div class="fbox-math">V<sub>CLN</sub> ≈ Bond pricing<sub>ref</sub> actualisé au taux (r + s<sub>ref</sub> + λ<sub>issuer</sub>)</div><div class="fbox-note">Résultat final : LIBOR + s<sub>CDS ref</sub> + hazard rate émetteur ≈ LIBOR + s<sub>CDS ref</sub> + s<sub>fund</sub>.</div></div>
+    </div>
+  </div>
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)"><span>Wrong-Way Risk (corrélation ≠ 0)</span><span class="acc-arrow">+</span></div>
+    <div class="acc-body">
+      <p class="body-text">Si la référence et l'émetteur sont corrélés (même secteur) → probabilité de défaut conjoint > produit des individuels → CLN vaut moins → spread plus élevé demandé.</p>
+      <div class="callout red">⚠ En entretien : «Si je price un CLN de BNP sur la dette senior d'une banque française, il y a un fort wrong-way risk. Je dois utiliser une copule gaussienne 2-noms pour la pricing, pas le produit des survies.»</div>
+    </div>
+  </div>
+</div>
+<div id="t-rec" class="tab-panel">
+  <h3 class="sub-title">Market vs Ultimate Recovery</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="card-tag">Market Recovery</div>
+      <p class="body-text" style="margin:0">Prix du bond 30 jours post-défaut. Observable. Utilisé dans les auctions ISDA. Volatile. Moyenne Senior Unsecured : ~40%.</p>
+    </div>
+    <div class="card">
+      <div class="card-tag">Ultimate Recovery</div>
+      <p class="body-text" style="margin:0">Montant finalement récupéré (après 2-7 ans de procédure). Souvent > market recovery. Utilisé par les rating agencies pour LGD.</p>
+    </div>
+  </div>
+  <table class="dtable">
+    <tr><th>Séniorité</th><th>Recovery moy.</th></tr>
+    <tr><td>Senior Secured</td><td>~65%</td></tr>
+    <tr><td>Senior Unsecured</td><td>~40%</td></tr>
+    <tr><td>Subordinated</td><td>~25%</td></tr>
+    <tr><td>Junior Sub</td><td>~15%</td></tr>
+  </table>
+  <div class="fbox red">
+    <div class="fbox-title">Sensibilité recovery : Digital vs Vanilla</div>
+    <div class="fbox-math">∂V<sub>vanilla</sub>/∂R ≈ 0 (faible)</div>
+    <div class="fbox-math" style="margin-top:6px">p<sub>digital</sub> = p<sub>vanilla</sub> / (1−R) → très fort!</div>
+    <div class="fbox-note">Vanilla=100bp : si R=0% → dig=100bp ; R=50% → 200bp ; R=90% → 1000bp !!</div>
+  </div>
+</div>
+`
+  },
+  {
+    num: '05', title: 'Réplication des CLN', tag: 'Ingénierie',
+    content: () => `
+<div class="sec-label">Réplication</div>
+<h2 class="sec-title">Comment Répliquer un CLN ?</h2>
+<div class="fbox">
+  <div class="fbox-title">Réplication fondamentale</div>
+  <div class="fbox-math">CLN = Bond Collatéral AAA + CDS vendu sur la référence</div>
+  <div class="fbox-note">Le notionnel de l'investisseur finance le bond collatéral. La prime CDS bonifie le coupon.</div>
+</div>
+<div class="tl">
+  <div class="tl-item"><div class="tl-label">T = 0</div>Investisseur verse 100. Banque achète un bond collatéral AAA pour 100 + vend protection CDS sur la référence à s<sub>CDS</sub> bp/an.</div>
+  <div class="tl-item"><div class="tl-label">T = i (coupon)</div>Investisseur reçoit : coupon collatéral + prime CDS = LIBOR + 10bp + 150bp = LIBOR + 160bp.</div>
+  <div class="tl-item"><div class="tl-label">T = défaut référence</div>Bond collatéral vendu pour 100. CDS settle : banque reçoit (100−R), investisseur reçoit R. Coupons cessent.</div>
+  <div class="tl-item"><div class="tl-label">T = maturité (survie)</div>Bond collatéral rembourse 100 → investisseur reçoit le pair.</div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Asset Swap : Par-Par vs Net Proceeds</h3>
+<div class="cards">
+  <div class="card">
+    <div class="card-tag">Par-Par Asset Swap</div>
+    <h3>Investisseur paie toujours 100</h3>
+    <p class="body-text" style="margin:0">Le swap absorbe la différence prix bond / pair. En cas de défaut, l'investisseur perd 100−R MAIS peut subir une perte/gain supplémentaire sur le MTM du swap. Exposition ≠ pure crédit.</p>
+  </div>
+  <div class="card">
+    <div class="card-tag">Net Proceeds (Market Value)</div>
+    <h3>Investisseur paie le prix réel</h3>
+    <p class="body-text" style="margin:0">Swap sur prix réel du bond. Plus proche économiquement d'un CLN vanille. Le z-spread est le spread approprié pour la base CDS/bond.</p>
+  </div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Relation Bond / CDS (la Base)</h3>
+<div class="fbox blue">
+  <div class="fbox-title">CDS/Bond Basis (Chaplin ch.11)</div>
+  <div class="fbox-math">Basis = s<sub>CDS</sub> − z-spread<sub>bond</sub></div>
+  <div class="fbox-note">Facteurs qui élargissent la base (+) : trigger event differences (+10%), delivery option (+5%), embedded options variables. Facteurs qui la réduisent (−) : par payoff (−5%), liquidité.</div>
+</div>
+<table class="dtable">
+  <tr><th>Facteur</th><th>Signe</th><th>Magnitude</th></tr>
+  <tr><td>Trigger event diff.</td><td>+</td><td>+10%</td></tr>
+  <tr><td>Delivery option</td><td>+</td><td>+5%</td></tr>
+  <tr><td>Par payoff CDS</td><td>−</td><td>−5%</td></tr>
+  <tr><td>Bond callable</td><td>+</td><td>+40-100bp</td></tr>
+  <tr><td>Liquidité</td><td>±</td><td>variable</td></tr>
+</table>
+`
+  },
+  {
+    num: '06', title: 'Digital CDS & Contingent Bond', tag: 'Digital',
+    content: () => `
+<div class="sec-label">Produits Digitaux</div>
+<h2 class="sec-title">Digital (Binary) CDS</h2>
+<p class="body-text">Un CDS digital paie un montant fixe (par) en cas de crédit event, indépendamment du recovery. La caractéristique clé : <strong>forte sensibilité au recovery</strong>.</p>
+<div class="fbox">
+  <div class="fbox-title">Valeur d'un long digital protection (Chaplin 14.1)</div>
+  <div class="fbox-math">V<sub>dig</sub> = ∫D(s)·S(s)·λ(s)ds − p<sub>dig</sub>·∫D(s)·S(s)ds</div>
+  <div class="fbox-note">Vs vanilla : le contingent leg est D·S·λ·(1−R). Le digital est D·S·λ·1 → premium<sub>dig</sub> = premium<sub>van</sub> / (1−R).</div>
+</div>
+<div class="cards">
+  <div class="card">
+    <div class="card-tag" style="color:var(--red)">R = 0%</div>
+    <div class="fbox red" style="margin:6px 0"><div class="fbox-math">p<sub>dig</sub> = p<sub>van</sub> = λ</div></div>
+    <p class="body-text" style="margin:0;font-size:.8rem">Vanilla et digital identiques.</p>
+  </div>
+  <div class="card">
+    <div class="card-tag" style="color:var(--gold)">R = 50%</div>
+    <div class="fbox gold" style="margin:6px 0"><div class="fbox-math">p<sub>dig</sub> = 100/(1−0.5) = 200bp</div></div>
+    <p class="body-text" style="margin:0;font-size:.8rem">Pour vanilla à 100bp.</p>
+  </div>
+  <div class="card">
+    <div class="card-tag" style="color:var(--a2)">R = 90%</div>
+    <div class="fbox blue" style="margin:6px 0"><div class="fbox-math">p<sub>dig</sub> = 100/(1−0.9) = 1000bp!</div></div>
+    <p class="body-text" style="margin:0;font-size:.8rem">Pour un prêt sécurisé à haut recovery.</p>
+  </div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Hedge d'un Digital CDS</h3>
+<div class="fbox">
+  <div class="fbox-title">Nominal CDS vanilla pour hedger N digital</div>
+  <div class="fbox-math">N<sub>vanilla hedge</sub> = N<sub>digital</sub> / (1 − R<sub>assumed</sub>)</div>
+  <div class="fbox-note">Si R assumed = 30%, 10M digital → short 14.3M vanilla. Si vraie R = 60% → hedge insuffisant → perte.</div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Formes de Risque Digital Embarqué</h3>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>CLN Capital Garanti (Bonus CLN)</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body"><p class="body-text">La protection est en forme digitale : les coupons perdus en cas de défaut représentent un paiement fixe. Hedge = vendre N/(1−R) vanilla CDS sur la période de risque.</p></div>
+</div>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>Tranches CDO (recovery risk)</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body"><p class="body-text">Les tranches CDO contiennent un risque digital implicite : la perte par défaut = N<sub>i</sub>(1−R<sub>i</sub>). Si R<sub>i</sub> change, la distribution des pertes change, et les tranches se repricient. Stress recovery = exercice obligatoire.</p></div>
+</div>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>Off-market CDS (livre mature)</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body"><p class="body-text">Un livre de CDS vanilles off-market accumule un risque digital résiduel. Chaque CDS avec un premium ≠ fair value a une sensibilité recovery non nulle (quoique faible).</p></div>
+</div>
+<div class="callout red">⚠ Portfolio avec digital risk : stress recovery est CRITIQUE. Une erreur de 20% sur R peut multiplier la perte par 2 sur les positions digitales.</div>
+`
+  },
+  {
+    num: '07', title: 'iTraxx — Indices & Tranches', tag: 'Indices',
+    content: () => `
+<div class="sec-label">Indices</div>
+<h2 class="sec-title">iTraxx</h2>
+<div class="cards">
+  <div class="card">
+    <div class="card-tag">iTraxx Europe Main</div>
+    <h3>125 noms Investment Grade</h3>
+    <p class="body-text" style="margin:0">Rebalancé tous les 6 mois (nouvelles séries). Maturités : 3, 5, 7, 10 ans. Notionnel par nom : 1/125. Liquidité maximale sur le 5 ans. Recovery standard : 40% (R=0.4).</p>
+  </div>
+  <div class="card">
+    <div class="card-tag">iTraxx Crossover</div>
+    <h3>75 noms High Yield / proches HY</h3>
+    <p class="body-text" style="margin:0">Spreads 200-600bp typiques. Baromètre du risque crédit HY européen.</p>
+  </div>
+  <div class="card">
+    <div class="card-tag">iTraxx Senior/Sub Financials</div>
+    <h3>25 noms bancaires</h3>
+    <p class="body-text" style="margin:0">Dette senior ou sub des grandes banques européennes. Suivi des desks XVA et structuration.</p>
+  </div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Tranches Standardisées iTraxx Europe 5Y</h3>
+<table class="dtable">
+  <tr><th>Tranche</th><th>Attach</th><th>Detach</th><th>ρ typ.</th></tr>
+  <tr><td><strong>Equity</strong></td><td>0%</td><td>3%</td><td>10-20%</td></tr>
+  <tr><td><strong>Jr Mezz</strong></td><td>3%</td><td>6%</td><td>15-25%</td></tr>
+  <tr><td><strong>Sr Mezz</strong></td><td>6%</td><td>9%</td><td>25-35%</td></tr>
+  <tr><td><strong>Senior</strong></td><td>9%</td><td>12%</td><td>35-50%</td></tr>
+  <tr><td><strong>Super Sr</strong></td><td>12%</td><td>22%</td><td>50-65%</td></tr>
+</table>
+<div class="divider"></div>
+<h3 class="sub-title">Convention de cotation Equity</h3>
+<div class="fbox gold">
+  <div class="fbox-title">Equity tranche — up-front + running</div>
+  <div class="fbox-math">Prix = Upfront (%) + 500bp running</div>
+  <div class="fbox-note">Ex : «40 points upfront + 500bp/an». Upfront = EL de la tranche [0,3%]. Convention post-2009.</div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Corrélation Trade Classique</h3>
+<div class="callout gold">⚡ Long corrélation = vendre equity + acheter mezz. En ρ haute : distribution bimodale → equity safe (peu de défauts individuels), super senior risqué. En ρ basse : défauts indépendants → equity souffre, senior safe.</div>
+<div class="cards">
+  <div class="card">
+    <div class="card-tag">ρ haute (crise, corrélation systémique)</div>
+    <p class="body-text" style="margin:0">Distribution bimodale. Equity vaut moins (protection moins chère). Super senior vaut plus (risque catastrophe). <strong>Short equity + long super senior</strong> = long ρ.</p>
+  </div>
+  <div class="card">
+    <div class="card-tag">ρ basse (marché calme, défauts idiosyncratiques)</div>
+    <p class="body-text" style="margin:0">Distribution binomiale. Equity vaut plus. Super senior cheap. <strong>Long equity + short super senior</strong> = short ρ.</p>
+  </div>
+</div>
+<div class="chart-wrap"><canvas id="itraxx-chart"></canvas></div>
+`
+  },
+  {
+    num: '08', title: 'Copule Gaussienne', tag: 'Modèles',
+    content: () => `
+<div class="sec-label">Modèles</div>
+<h2 class="sec-title">Copule Gaussienne</h2>
+<div class="callout">Standard de marché pour pricer CDOs et tranches iTraxx. David Li (2000). Modèle simple avec des limites importantes (tail dependence = 0).</div>
+<h3 class="sub-title">Algorithme Complet — Chaplin §20.2.1</h3>
+<div class="tl">
+  <div class="tl-item">
+    <div class="tl-label">Étape 1 — Cholesky</div>
+    <div class="fbox" style="margin-top:6px"><div class="fbox-math">R = L · L<sup>T</sup></div><div class="fbox-note">Décomposer la matrice de corrélation R en L·Lᵀ. Garantit la validité de la matrice (inversible).</div></div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-label">Étape 2 — Tirage indépendant</div>
+    Générer n variables normales indépendantes x<sub>i</sub> ~ N(0,1).
+  </div>
+  <div class="tl-item">
+    <div class="tl-label">Étape 3 — Corrélation</div>
+    <div class="fbox" style="margin-top:6px"><div class="fbox-math">z<sub>k</sub> = Σ<sub>j</sub> L<sub>kj</sub> · x<sub>j</sub></div><div class="fbox-note">Variables normales corrélées. Cov(z<sub>k</sub>, z<sub>m</sub>) = ρ<sub>km</sub>.</div></div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-label">Étape 4 — CDF</div>
+    <div class="fbox" style="margin-top:6px"><div class="fbox-math">U<sub>i</sub> = Φ(z<sub>i</sub>) ∈ [0,1]</div></div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-label">Étape 5 — Temps de défaut</div>
+    <div class="fbox" style="margin-top:6px"><div class="fbox-math">t<sub>i</sub> = −ln(1−U<sub>i</sub>) / λ<sub>i</sub></div><div class="fbox-note">Inversion de la loi de survie S(t)=e<sup>−λt</sup>. Calibrée sur les CDS.</div></div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-label">Étape 6 — Valorisation</div>
+    Calculer les cash-flows des tranches pour chaque simulation. Prendre l'espérance actualisée.
+  </div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">One-Factor Model (SCF — Andersen)</h3>
+<div class="fbox blue">
+  <div class="fbox-title">Copule 1-facteur</div>
+  <div class="fbox-math">Z<sub>i</sub> = √ρ · F + √(1−ρ) · X<sub>i</sub></div>
+  <div class="fbox-note">F = facteur commun (économique). X<sub>i</sub> = idiosyncratique. Corr(Z<sub>i</sub>, Z<sub>j</sub>) = ρ pour tout i≠j.</div>
+  <div class="fbox-math" style="margin-top:8px">P(t<sub>i</sub>≤T|F=f) = Φ([Φ<sup>−1</sup>(p<sub>i</sub>) − √ρ·f] / √(1−ρ))</div>
+  <div class="fbox-note">Conditionnel à F, les noms sont INDÉPENDANTS → convolution tractable → algorithme SCF 100-1000x plus rapide que MC brut.</div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Limites de la Copule Gaussienne</h3>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>Tail dependence = 0</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body"><p class="body-text">Dépendance de queue nulle pour ρ&lt;1. Les défauts simultanés en crise sont sous-modélisés. Tranches senior sous-pricées en stress. → Copule t-Student ou Clayton pour plus de réalisme.</p></div>
+</div>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>Corrélation smile (non arbitrage-free)</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body"><p class="body-text">La corrélation implicite varie par tranche. Equity → ρ basse (~15%), Super Senior → ρ haute (~55%). Indique que le modèle gaussien à ρ unique est mal spécifié. Solution pratique : Base Correlation.</p></div>
+</div>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>Recovery déterministe</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body"><p class="body-text">En réalité R est aléatoire et anticorrélé avec le nb de défauts (plus de défauts → recovery plus basse). Modèle N2D extended : distribution Beta sur R (Chaplin §20.1.6).</p></div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Copules Alternatives</h3>
+<div class="fbox">
+  <div class="fbox-title">Copule Clayton (tail inférieure)</div>
+  <div class="fbox-math">C(u,v) = (u<sup>−θ</sup> + v<sup>−θ</sup> − 1)<sup>−1/θ</sup>, θ > 0</div>
+  <div class="fbox-note">Tail dependence inférieure positive. Plus réaliste pour les phases de crise.</div>
+</div>
+<div class="chart-wrap"><canvas id="cop-chart"></canvas></div>
+`
+  },
+  {
+    num: '09', title: 'Base & Compound Correlation', tag: 'Corrélation',
+    content: () => `
+<div class="sec-label">Corrélation</div>
+<h2 class="sec-title">Compound vs Base Correlation</h2>
+<div class="cards">
+  <div class="card">
+    <div class="card-tag" style="color:var(--a3)">Compound Correlation</div>
+    <h3>Corrélation par tranche</h3>
+    <p class="body-text" style="margin:0">Corrélation unique ρ qui price exactement une tranche [a,b]. Problèmes : peut ne pas exister (smile), n'est pas arbitrage-free entre tranches.</p>
+    <div class="fbox" style="margin-top:8px"><div class="fbox-math">ρ<sub>comp</sub><sup>[a,b]</sup> : EL<sub>model</sub>[a,b](ρ) = EL<sub>market</sub>[a,b]</div></div>
+  </div>
+  <div class="card">
+    <div class="card-tag" style="color:var(--a)">Base Correlation (standard)</div>
+    <h3>Corrélation base tranches [0,K]</h3>
+    <p class="body-text" style="margin:0">Corrélation qui price les base tranches [0,K]. Toujours définie, monotone en K. Plus robuste. Standard JP Morgan depuis 2004.</p>
+    <div class="fbox" style="margin-top:8px"><div class="fbox-math">EL[a,b] = EL<sub>ρ<sub>b</sub></sub>[0,b] − EL<sub>ρ<sub>a</sub></sub>[0,a]</div><div class="fbox-note">ρ<sub>a</sub> et ρ<sub>b</sub> interpolés sur la courbe de base correlation.</div></div>
+  </div>
+</div>
+<div class="callout gold">⚡ En entretien : «La base correlation forme une courbe montante de 15% (equity) à 55% (super senior). Pour pricer une tranche bespoke, j'interpole ρ(a) et ρ(b) et j'utilise la relation d'additivité des EL.»</div>
+<div class="divider"></div>
+<h3 class="sub-title">Types de Matrices de Corrélation</h3>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>Pairwise Matrix</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body"><p class="body-text">Matrice générale avec des valeurs différentes pour chaque paire (i,j). Doit être symétrique et inversible. Difficile à utiliser en SCF (nécessite MC complet).</p></div>
+</div>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>Tag Correlation</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body"><p class="body-text">Corrélation définie par les caractéristiques (industrie, rating). Ex : ρ=0.2 si même industrie ET même grade, ρ=0.1 si l'un des deux, ρ=0 sinon. Seulement 3 valeurs max.</p></div>
+</div>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>One-Factor (flat) — le plus utilisé</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body">
+    <div class="fbox green"><div class="fbox-math">ρ<sub>ij</sub> = ρ pour tout i≠j</div><div class="fbox-note">Garantit l'inversibilité pour 0 ≤ ρ &lt; 1. Permet l'algorithme SCF. C'est la base du modèle standard CDO.</div></div>
+  </div>
+</div>
+<div class="divider"></div>
+<div class="chart-wrap"><canvas id="corr-chart"></canvas></div>
+<h3 class="sub-title">Sources de Corrélation</h3>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>Corrélation historique (equity/spread)</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body"><p class="body-text">Equity correlation : données longues, bonne qualité. Pas de lien théorique direct avec la corrélation des temps de défaut. CDS spread correlation : plus stable (constant maturity), mais séries courtes. Dans les deux cas, ne reproduit pas les prix de marché des tranches iTraxx.</p></div>
+</div>
+<div class="acc-item">
+  <div class="acc-head" onclick="toggleAcc(this)"><span>Corrélation implicite de marché</span><span class="acc-arrow">+</span></div>
+  <div class="acc-body"><div class="callout">Pour le mark-to-market et la gestion des CDOs : la corrélation implicite extraite du marché (base correlation) est la SEULE corrélation valide en théorie. Les données historiques ne permettent pas de reproduire les prix observés.</div></div>
+</div>
+`
+  },
+  {
+    num: '10', title: 'Simulation MC — Pricing Tranche', tag: 'Simulation',
+    content: () => `
+<div class="sec-label">Implémentation</div>
+<h2 class="sec-title">Simulation Monte Carlo</h2>
+<div class="fbox">
+  <div class="fbox-title">Valeur d'une tranche CDO [a,b] — formule (Chaplin 20.10-20.12)</div>
+  <div class="fbox-math">B = Σ<sub>i</sub> if(t<sub>i</sub>&lt;T, N<sub>i</sub>(1−R<sub>i</sub>)e<sup>−r·t<sub>i</sub></sup>, 0)</div>
+  <div class="fbox-math" style="margin-top:6px">P = ∫<sub>0</sub><sup>T</sup> N(t)·e<sup>−r·t</sup> dt</div>
+  <div class="fbox-math" style="margin-top:6px">V = B − p·P = 0 → p* = B/P</div>
+  <div class="fbox-note">B = expected loss (protection leg). P = DV01 de la tranche (premium leg). N(t) = notionnel résiduel de la tranche.</div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Algorithme Python</h3>
+<div class="code">
+<span class="ck">import</span> numpy <span class="ck">as</span> np
+<span class="ck">from</span> scipy.stats <span class="ck">import</span> norm
+
+<span class="ck">def</span> <span class="cf">price_cdo_tranche</span>(
+    spreads, recovery, rho,
+    a, b, T, r,
+    n_sim=<span class="cn">50000</span>
+):
+  n = <span class="cn">len</span>(spreads)
+  lam = np.array(spreads) / (<span class="cn">1</span> - recovery)
+
+  <span class="cc"># Copule gaussienne 1-facteur</span>
+  F = np.random.normal(<span class="cn">0</span>,<span class="cn">1</span>, n_sim)
+  X = np.random.normal(<span class="cn">0</span>,<span class="cn">1</span>,(n_sim,n))
+  Z = np.sqrt(rho)*F[:,<span class="ck">None</span>] + np.sqrt(<span class="cn">1</span>-rho)*X
+  U = norm.cdf(Z)
+
+  <span class="cc"># Temps de défaut</span>
+  tau = -np.log(<span class="cn">1</span>-U) / lam[<span class="ck">None</span>,:]
+
+  <span class="cc"># Pertes sur le pool</span>
+  lgd = (<span class="cn">1</span>/n)*(<span class="cn">1</span>-recovery)
+  pool = lgd*(tau &lt;= T).sum(axis=<span class="cn">1</span>)
+
+  <span class="cc"># Perte tranche [a,b]</span>
+  tl = np.clip(pool-a, <span class="cn">0</span>, b-a)
+
+  disc = np.exp(-r*T)
+  EL = disc * tl.mean()
+  DV01 = disc * (b-a - tl.mean())
+  <span class="ck">return</span> EL/DV01 <span class="ck">if</span> DV01><span class="cn">0</span> <span class="ck">else</span> <span class="cn">0</span>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Semi-Closed Form (SCF) — Andersen</h3>
+<p class="body-text">100-1000x plus rapide que MC. Essentiel pour calculer les deltas (sensibilités) par nom.</p>
+<div class="tl">
+  <div class="tl-item"><div class="tl-label">Loss Unit</div>Pour un pool homogène (iTraxx) : LU = N<sub>notionnel</sub>/N × (1−R). Pour iTraxx 1bn, R=40% : LU = 4.8M par nom. TLU = 125.</div>
+  <div class="tl-item"><div class="tl-label">Convolution</div><div class="fbox" style="margin-top:6px"><div class="fbox-math">P(n pertes|F=f) = P(n pertes|f, sans nom k) × P(0|f,k) + P(n−LU<sub>k</sub>|f, sans k) × P(LU<sub>k</sub>|f,k)</div><div class="fbox-note">Intégration sur F via quadrature gaussienne (40-80 points).</div></div></div>
+  <div class="tl-item"><div class="tl-label">P(défaut|F=f)</div><div class="fbox" style="margin-top:6px"><div class="fbox-math">p<sub>i</sub>(f) = Φ([Φ<sup>−1</sup>(p<sub>i</sub>) − √ρ·f] / √(1−ρ))</div></div></div>
+</div>
+<div class="callout blue">⚡ SCF = standard chez les dealers. MC = vérification et produits complexes (waterfall OC/IC, CDO²). Pour les deltas : SCF est indispensable (différences finies rapidement).</div>
+`
+  },
+  {
+    num: '11', title: 'Code VBA — Pricer CLN', tag: 'Code',
+    content: () => `
+<div class="sec-label">Implémentation VBA</div>
+<h2 class="sec-title">CLN Pricer Excel/VBA</h2>
+<div class="callout">Pricer single-name complet : calibration hazard rate, CDF survie, fair spread, ZC price, digital premium.</div>
+<div class="code">
+<span class="cc">' CLN_Pricer.bas — CACIB Credit Structuring</span>
+
+<span class="ck">Function</span> <span class="cf">HazardRate</span>(<span class="cv">s</span> <span class="ck">As Double</span>, _
+                     <span class="cv">R</span> <span class="ck">As Double</span>) <span class="ck">As Double</span>
+  <span class="cc">' lambda = s / (1-R)</span>
+  <span class="cf">HazardRate</span> = <span class="cv">s</span> / (<span class="cn">1</span> - <span class="cv">R</span>)
+<span class="ck">End Function</span>
+
+<span class="ck">Function</span> <span class="cf">SurvProb</span>(<span class="cv">t</span> <span class="ck">As Double</span>, _
+                  <span class="cv">lam</span> <span class="ck">As Double</span>) <span class="ck">As Double</span>
+  <span class="cf">SurvProb</span> = Exp(-<span class="cv">lam</span> * <span class="cv">t</span>)
+<span class="ck">End Function</span>
+
+<span class="ck">Function</span> <span class="cf">CLN_FairSpread</span>( _
+  <span class="cv">sCDS</span> <span class="ck">As Double</span>, <span class="cc">' CDS ref (décimal)</span>
+  <span class="cv">sIss</span> <span class="ck">As Double</span>, <span class="cc">' CDS émetteur</span>
+  <span class="cv">R</span>    <span class="ck">As Double</span>, <span class="cc">' recovery</span>
+  <span class="cv">rf</span>   <span class="ck">As Double</span>, <span class="cc">' taux risk-free</span>
+  <span class="cv">T</span>    <span class="ck">As Double</span>, <span class="cc">' maturité (ans)</span>
+  <span class="cv">freq</span> <span class="ck">As Integer</span> <span class="cc">' 4 = trimestriel</span>
+) <span class="ck">As Double</span>
+
+  <span class="ck">Dim</span> <span class="cv">lR</span> <span class="ck">As Double</span>, <span class="cv">lI</span> <span class="ck">As Double</span>
+  <span class="ck">Dim</span> <span class="cv">dt</span> <span class="ck">As Double</span>, <span class="cv">t</span> <span class="ck">As Double</span>
+  <span class="ck">Dim</span> <span class="cv">sC</span> <span class="ck">As Double</span>, <span class="cv">sR</span> <span class="ck">As Double</span>
+  <span class="ck">Dim</span> <span class="cv">i</span> <span class="ck">As Integer</span>
+
+  <span class="cv">lR</span> = <span class="cf">HazardRate</span>(<span class="cv">sCDS</span>, <span class="cv">R</span>)
+  <span class="cv">lI</span> = <span class="cf">HazardRate</span>(<span class="cv">sIss</span>, 0.4)
+  <span class="cv">dt</span> = 1 / <span class="cv">freq</span>
+
+  <span class="ck">For</span> <span class="cv">i</span> = 1 <span class="ck">To</span> <span class="cv">T</span> * <span class="cv">freq</span>
+    <span class="cv">t</span> = <span class="cv">i</span> * <span class="cv">dt</span>
+    <span class="cc">' Premium leg : disc × survie jointe × dt</span>
+    <span class="cv">sC</span> = <span class="cv">sC</span> + Exp(-<span class="cv">rf</span>*<span class="cv">t</span>) * _
+           Exp(-(<span class="cv">lR</span>+<span class="cv">lI</span>)*<span class="cv">t</span>) * <span class="cv">dt</span>
+    <span class="cc">' Recovery leg</span>
+    <span class="cv">sR</span> = <span class="cv">sR</span> + Exp(-<span class="cv">rf</span>*<span class="cv">t</span>) * <span class="cv">R</span> * _
+           <span class="cv">lR</span>*Exp(-(<span class="cv">lR</span>+<span class="cv">lI</span>)*(<span class="cv">t</span>-<span class="cv">dt</span>/2))*<span class="cv">dt</span>
+  <span class="ck">Next</span> <span class="cv">i</span>
+
+  <span class="ck">Dim</span> <span class="cv">PP</span> <span class="ck">As Double</span>
+  <span class="cv">PP</span> = Exp(-<span class="cv">rf</span>*<span class="cv">T</span>) * Exp(-(<span class="cv">lR</span>+<span class="cv">lI</span>)*<span class="cv">T</span>)
+  <span class="ck">If</span> <span class="cv">sC</span> > 0 <span class="ck">Then</span>
+    <span class="cf">CLN_FairSpread</span> = (1 - <span class="cv">sR</span> - <span class="cv">PP</span>) / <span class="cv">sC</span>
+  <span class="ck">End If</span>
+<span class="ck">End Function</span>
+
+<span class="ck">Function</span> <span class="cf">Digital_Premium</span>( _
+  <span class="cv">vanPrem</span> <span class="ck">As Double</span>, _
+  <span class="cv">R</span> <span class="ck">As Double</span>) <span class="ck">As Double</span>
+  <span class="cc">' = vanilla / (1-R)</span>
+  <span class="cf">Digital_Premium</span> = <span class="cv">vanPrem</span> / (<span class="cn">1</span> - <span class="cv">R</span>)
+<span class="ck">End Function</span>
+
+<span class="ck">Function</span> <span class="cf">CLN_ZC_Price</span>( _
+  <span class="cv">lam</span> <span class="ck">As Double</span>, <span class="cv">rf</span> <span class="ck">As Double</span>, _
+  <span class="cv">R</span> <span class="ck">As Double</span>, <span class="cv">T</span> <span class="ck">As Double</span>) <span class="ck">As Double</span>
+  <span class="ck">Dim</span> <span class="cv">sT</span> <span class="ck">As Double</span>
+  <span class="cv">sT</span> = Exp(-<span class="cv">lam</span> * <span class="cv">T</span>)
+  <span class="cf">CLN_ZC_Price</span> = Exp(-<span class="cv">rf</span>*<span class="cv">T</span>) * _
+    (<span class="cv">sT</span> + <span class="cv">R</span>*(<span class="cn">1</span>-<span class="cv">sT</span>)*Exp(<span class="cv">lam</span>*<span class="cv">T</span>/2))
+<span class="ck">End Function</span>
+</div>
+<div class="callout blue">⚡ En entretien : «Ce pricer VBA intègre la calibration du hazard rate sur les CDS 5Y, le calcul du fair spread avec prise en compte du risque émetteur (survie jointe), et le pricing ZC et digital. Déployé sur Excel pour les traders du desk.»</div>
+`
+  },
+  {
+    num: '12', title: 'Schéma Global — Tout Relier', tag: 'Synthèse',
+    content: () => `
+<div class="sec-label">Synthèse</div>
+<h2 class="sec-title">Tout Relier</h2>
+<h3 class="sub-title">De l'Obligation au CDO</h3>
+<div class="tl">
+  <div class="tl-item"><div class="tl-label">Brique 1 — Bond risqué</div><div class="fbox"><div class="fbox-math">P = Σ D(t<sub>i</sub>)·S(t<sub>i</sub>)·c·Δt + D(T)·[S(T) + R·(1−S(T))]</div></div></div>
+  <div class="tl-item"><div class="tl-label">Brique 2 — CDS</div><div class="fbox blue"><div class="fbox-math">V<sub>CDS</sub> = ∫D·S·λ·(1−R)dt − p·∫D·S dt = 0 → p = λ(1−R)</div></div></div>
+  <div class="tl-item"><div class="tl-label">Brique 3 — CLN</div><div class="fbox"><div class="fbox-math">CLN = Bond collatéral + CDS vendu | Fair spread ≈ s<sub>CDS</sub> + s<sub>fund</sub></div></div></div>
+  <div class="tl-item"><div class="tl-label">Brique 4 — Panier / N2D</div>Généraliser à N noms avec des temps de défaut corrélés → copule gaussienne pour simuler les t<sub>i</sub>.</div>
+  <div class="tl-item"><div class="tl-label">Brique 5 — Tranche CDO</div><div class="fbox gold"><div class="fbox-math">L<sub>[a,b]</sub>(t) = max(0, min(L<sub>pool</sub>−a, b−a)) | p* = EL/DV01</div></div></div>
+  <div class="tl-item"><div class="tl-label">Brique 6 — iTraxx + Base Correlation</div>125 noms IG + tranches standardisées. Base correlation = ρ(K) pour pricer [0,K]. Smile → copule unique insuffisante.</div>
+</div>
+<div class="divider"></div>
+<h3 class="sub-title">Tableau de Synthèse — Sensibilités</h3>
+<table class="dtable">
+  <tr><th>Produit</th><th>Sensibilité spread</th><th>Sensibilité ρ</th><th>Sensibilité R</th></tr>
+  <tr><td>Vanilla CDS</td><td>DV01 ≈ 4-5 pts / 100bp</td><td>Nulle</td><td>Faible</td></tr>
+  <tr><td>Digital CDS</td><td>DV01 similaire</td><td>Nulle</td><td><strong>Très forte</strong></td></tr>
+  <tr><td>CLN single name</td><td>≈ CDS ref + issuer</td><td>Nulle (si indép.)</td><td>Modérée</td></tr>
+  <tr><td>Equity tranche</td><td>Haute (delta > 1)</td><td><strong>−</strong> (court ρ)</td><td>Forte</td></tr>
+  <tr><td>Sr mezz tranche</td><td>Modérée</td><td>Faible −</td><td>Modérée</td></tr>
+  <tr><td>Super Senior</td><td>Faible</td><td><strong>+</strong> (long ρ)</td><td>Faible</td></tr>
+</table>
+<div class="callout gold">⚡ La question classique en structuring : «Quelle est votre vue sur la corrélation ?». Réponse : long ρ = sell equity + buy senior. Short ρ = buy equity + sell senior. En 2007 : ρ a explosé → super senior ont crashé.</div>
+<div class="divider"></div>
+<h3 class="sub-title">Checklist Entretien Trading/Structuring Crédit</h3>
+<div class="acc-item"><div class="acc-head" onclick="toggleAcc(this)"><span>✓ CLN — Questions Garanties</span><span class="acc-arrow">+</span></div>
+<div class="acc-body">
+  <p class="body-text">• CLN = CDS funded. Spread = s<sub>CDS</sub> + s<sub>fund</sub><br>
+  • First-to-default sur référence ET émetteur<br>
+  • Balance sheet vs SPV : quand utiliser lequel ?<br>
+  • CLN ZC : prix = e<sup>−(r+s)T</sup> × S(T) + recovery<br>
+  • Callable : vol spread non observable → large B/O<br>
+  • Bonus : protection digitale → hedge N/(1−R) vanilla</p>
+</div></div>
+<div class="acc-item"><div class="acc-head" onclick="toggleAcc(this)"><span>✓ Tranches — Questions Garanties</span><span class="acc-arrow">+</span></div>
+<div class="acc-body">
+  <p class="body-text">• Waterfall : L<sub>tranche</sub> = max(0, min(L−a, b−a))<br>
+  • ρ↑ → equity safe, super senior risqué<br>
+  • Base vs compound correlation (monotone vs smile)<br>
+  • EL[a,b] = EL<sub>ρb</sub>[0,b] − EL<sub>ρa</sub>[0,a]<br>
+  • iTraxx : 125 noms, 5 tranches, rebalancé 6 mois<br>
+  • Equity coté up-front + 500bp running</p>
+</div></div>
+<div class="acc-item"><div class="acc-head" onclick="toggleAcc(this)"><span>✓ Modèles — Questions Garanties</span><span class="acc-arrow">+</span></div>
+<div class="acc-body">
+  <p class="body-text">• Copule Gaussienne : Cholesky → z<sub>k</sub>=Σ L<sub>kj</sub>x<sub>j</sub> → U=Φ(z) → t=−ln(U)/λ<br>
+  • SCF/Andersen : conditionnement sur F, convolution, 100-1000x MC<br>
+  • Tail dependence = 0 → sous-estimation des crises<br>
+  • Digital → λ = s/(1−R), donc p<sub>dig</sub> = p<sub>van</sub>/(1−R)<br>
+  • z-spread ≈ λ si R=0 ; z-spread &lt; λ si R>0</p>
+</div></div>
+`
+  }
+];
+
+// Flash cards data
+const FLASHCARDS = [
+  { q: "Qu'est-ce qu'un CLN ? Différence avec un CDS ?", a: "Un CLN est la forme funded d'un CDS. L'investisseur finance le notionnel → la banque n'a plus de risque de contrepartie. L'investisseur prend un risque first-to-default sur la référence ET l'émetteur. Spread CLN ≈ s_CDS + s_funding. Différence principale : le CLN est une vraie obligation avec des coupons, le CDS est un swap (pas de capital échangé)." },
+  { q: "Expliquez Base Correlation vs Compound Correlation", a: "Compound : ρ unique qui price exactement une tranche [a,b]. Peut ne pas exister. Non arbitrage-free entre tranches. Base correlation : ρ(K) qui price les base tranches [0,K]. Toujours définie, montone en K. Pour pricer [a,b] bespoke : EL[a,b] = EL_ρ(b)[0,b] - EL_ρ(a)[0,a]. C'est le standard depuis JP Morgan 2004." },
+  { q: "Impact de la corrélation sur equity vs super senior ?", a: "ρ↑ → distribution bimodale (tout le monde survit OU tout le monde défaut) → equity SAFE (peu de défauts isolés) mais super senior RISQUÉ (scénario catastrophe plus probable). ρ↓ → défauts indépendants → equity souffre, super senior safe. 2007-2008 : ρ a explosé → les tranches AAA super senior ont crashé car sous-pricées." },
+  { q: "Comment hedger un CLN zéro coupon capital garanti ?", a: "1) Acheter OAT/Bund ZC pour garantir le pair à maturité (~75% du notionnel sur 5 ans). 2) Avec le solde, structurer l'exposition crédit sur la période de risque (digital protection). Hedge du trader : vendre N/(1−R) vanilla CDS sur la période de risque. Risque résiduel : corrélation taux/crédit (si défaut + hausse des taux → perte sur le ZC)." },
+  { q: "Pourquoi le digital CDS est très sensible au recovery ?", a: "Vanilla = paie (1−R) × notionnel MAIS probabilité de défaut ∝ 1/(1−R) → effets s'annulent. Digital = paie toujours 100 → seule la probabilité change. Résultat : p_dig = p_van/(1-R). Vanilla 100bp : R=0%→100bp, R=50%→200bp, R=90%→1000bp! Portfolio avec CLN capital garanti = plein de digital risk → stress recovery obligatoire." },
+  { q: "Expliquer l'algorithme de la copule gaussienne", a: "1) Cholesky : R=L·Lᵀ. 2) Tirer x_i ~ N(0,1) indépendants. 3) Corréler : z_k = Σ_j L_kj·x_j. 4) CDF : U_i = Φ(z_i). 5) Temps de défaut : t_i = -ln(1-U_i)/λ_i. 6) Calculer les cashflows des tranches pour ces défauts. Répéter N fois, prendre l'espérance actualisée. SCF (Andersen) : conditionne sur F pour rendre les noms indépendants → convolution → 100-1000x plus rapide." },
+  { q: "Quelle est la différence z-spread vs asset swap spread ?", a: "Z-spread : spread constant ajouté à toute la courbe zéro-coupon pour retrouver le prix du bond par actualisation. Bien défini pour tout prix. Asset swap spread (par-par) : spread flottant d'un swap qui échange les coupons fixes contre LIBOR flat, avec l'investisseur payant toujours 100. Au pair : ASW = z-spread. Below par : ASW > z-spread. Above par : ASW < z-spread. Z-spread préférable pour la base CDS/bond." },
+  { q: "Quel est le quel funding pour un CLN callable ?", a: "Funding = s_CDS + s_fund - V_call. La valeur du call dépend : (1) vol des taux (swaptions/caplets, observable), (2) vol du spread crédit (NON observable sur single-name). À 100bp spread, vol ~85% → basis callable ≈ +40bp vs bullet. À 250bp, basis ≈ +100bp. Pricing conservateur car pas de vol implicite spread → bid-offer large. Sur iTraxx, options existent et donnent une référence." },
+  { q: "Comment pricer un CDS ? Formula ?", a: "V_CDS = ∫D(t)·S(t)·λ(1-R)dt - p·∫D(t)·S(t)dt. À l'initiation V=0 → p = λ(1-R). Si λ constant et R=40% : pour s=200bp, λ=333bp. Protection leg = EL actualisé. Premium leg = DV01 × prime. Sensibilité : dV/ds ≈ -DV01 (≈ -4 pour 5Y IG). La clé : CDS est insensible à R (les deux effets s'annulent pour le vanilla)." },
+  { q: "Qu'est-ce que le wrong-way risk dans un CLN ?", a: "Si la référence et l'émetteur sont positivement corrélés → probabilité de défaut conjoint > produit des survies individuelles → CLN vaut moins → l'investisseur demande un spread plus élevé. Ex : CLN émis par BNP sur la dette senior d'une banque italienne en crise. Pour pricer correctement : copule gaussienne 2-noms, pas le produit des S(t). En pratique : wrong-way risk est le principal argument pour utiliser des SPV (isolation du risque émetteur)." },
+  { q: "Expliquez le waterfall d'un CDO synthétique", a: "Pertes cumulées du pool L(t) = Σ N_i(1-R_i) pour les défauts jusqu'à t. Tranche equity [0-3%] : absorbe les premières pertes, max 3%. Perte tranche = min(L,3%). Tranche [3-6%] : n'est touchée que si L>3%. Perte = max(0,min(L-3,3%)). Chaque tranche a un attachment et detachment. Prime de protection = EL/DV01. Convention equity : up-front + 500bp running." },
+  { q: "Qu'est-ce que la market recovery vs ultimate recovery ?", a: "Market recovery = prix du bond 30 jours post-défaut. Observable, utilisé dans les auctions ISDA pour cash settlement CDS. Volatile (std dev élevée). Moyenne SU ≈ 40%. Ultimate recovery = montant finalement récupéré après la procédure (2-7 ans). Souvent > market. Utilisé par les rating agencies pour LGD. Pour les CLNs et CDOs : on utilise la market recovery car c'est ce qui settle les CDS embedded. Stress recovery = analyse de sensibilité critique pour les produits avec digital risk." }
+];
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+let currentPage = 'home';
+let pricerChart = null;
+let clnType = 'van';
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('bnav-' + name)?.classList.add('active');
+  currentPage = name;
+  if (name === 'pricer') { calcCLN(); }
+  if (name === 'flash') { renderFC(); }
+  if (name === 'home') { renderHome(); }
+  window.scrollTo(0,0);
+}
+
+function goHome() {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-home').classList.add('active');
+  document.getElementById('bnav-home').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════
+function renderHome() {
+  const list = document.getElementById('module-list');
+  list.innerHTML = MODULES.map(m => `
+    <div class="module-card" onclick="openModule('${m.num}')">
+      <div class="module-num">${m.num}</div>
+      <div class="module-title">${m.title}</div>
+      <span class="module-tag">${m.tag}</span>
+      <span class="module-arrow">›</span>
+    </div>
+  `).join('');
+}
+
+function openModule(num) {
+  const m = MODULES.find(x => x.num === num);
+  if (!m) return;
+  document.getElementById('mod-num-display').textContent = 'Module ' + m.num;
+  document.getElementById('mod-title-display').textContent = m.title;
+  document.getElementById('mod-content').innerHTML = m.content();
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-module').classList.add('active');
+  window.scrollTo(0,0);
+  // Render any charts in the module
+  requestAnimationFrame(() => {
+    if (document.getElementById('haz-chart')) renderHazChart();
+    if (document.getElementById('itraxx-chart')) renderItraxxChart();
+    if (document.getElementById('cop-chart')) renderCopChart();
+    if (document.getElementById('corr-chart')) renderCorrChart();
+    // Reprocess MathJax if available
+  });
+}
+
+// ═══════════════════════════════════════════
+// ACCORDION
+// ═══════════════════════════════════════════
+function toggleAcc(head) {
+  const item = head.closest('.acc-item');
+  const wasOpen = item.classList.contains('open');
+  // Close siblings within same container
+  const parent = item.parentNode;
+  parent.querySelectorAll('.acc-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// ═══════════════════════════════════════════
+// TABS (in modules)
+// ═══════════════════════════════════════════
+function swTab(btn, targetId) {
+  const container = btn.closest('.mod-content') || btn.closest('.page-inner');
+  container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  container.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(targetId)?.classList.add('active');
+}
+
+// ═══════════════════════════════════════════
+// FLASHCARDS
+// ═══════════════════════════════════════════
+function renderFC() {
+  const list = document.getElementById('fc-list');
+  if (list.children.length > 0) return;
+  list.innerHTML = FLASHCARDS.map((fc, i) => `
+    <div class="fc-card" id="fc-${i}">
+      <div class="fc-q" onclick="toggleFC(${i})">
+        <span>${fc.q}</span>
+        <span class="fc-arrow">+</span>
+      </div>
+      <div class="fc-a">${fc.a}</div>
+    </div>
+  `).join('');
+}
+
+function toggleFC(i) {
+  const card = document.getElementById('fc-' + i);
+  const wasOpen = card.classList.contains('open');
+  document.querySelectorAll('.fc-card').forEach(c => c.classList.remove('open'));
+  if (!wasOpen) card.classList.add('open');
+}
+
+function filterFC() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  document.querySelectorAll('.fc-card').forEach(card => {
+    const text = card.querySelector('.fc-q').textContent.toLowerCase();
+    card.classList.toggle('hidden', q.length > 0 && !text.includes(q));
+  });
+}
+
+let searchVisible = false;
+function toggleSearch() {
+  if (currentPage !== 'flash') { showPage('flash'); }
+  const sw = document.getElementById('search-wrap');
+  searchVisible = !searchVisible;
+  sw.style.display = searchVisible ? 'block' : 'none';
+  if (searchVisible) document.getElementById('search-input').focus();
+}
+
+// ═══════════════════════════════════════════
+// PRICER
+// ═══════════════════════════════════════════
+function setCLNType(t) {
+  clnType = t;
+  ['van','zc','bon'].forEach(x => {
+    const b = document.getElementById('btn-' + x);
+    if (b) { b.className = 'type-btn' + (x === t ? ' active' : ''); }
+  });
+  calcCLN();
+}
+
+function calcCLN() {
+  const cds = parseFloat(document.getElementById('s-cds').value) / 10000;
+  const iss = parseFloat(document.getElementById('s-iss').value) / 10000;
+  const rr  = parseFloat(document.getElementById('s-rr').value) / 100;
+  const rf  = parseFloat(document.getElementById('s-rf').value) / 100;
+  const T   = parseFloat(document.getElementById('s-mat').value);
+
+  document.getElementById('d-cds').textContent = Math.round(cds*10000) + ' bp';
+  document.getElementById('d-iss').textContent = Math.round(iss*10000) + ' bp';
+  document.getElementById('d-rr').textContent  = Math.round(rr*100) + '%';
+  document.getElementById('d-rf').textContent  = (rf*100).toFixed(1) + '%';
+  document.getElementById('d-mat').textContent = T + ' ans';
+
+  const lam  = cds / (1 - rr);
+  const lamI = iss / 0.6;
+  const freq = 4, dt = 1/freq;
+  let sc = 0, sr = 0;
+  for (let i = 1; i <= T*freq; i++) {
+    const t = i*dt;
+    sc += Math.exp(-rf*t) * Math.exp(-(lam+lamI)*t) * dt;
+    sr += Math.exp(-rf*t) * rr * lam * Math.exp(-(lam+lamI)*(t-dt/2)) * dt;
+  }
+  const PP = Math.exp(-rf*T) * Math.exp(-(lam+lamI)*T);
+  const fairS = sc > 0 ? (1-sr-PP)/sc : 0;
+  const survT = Math.exp(-lam*T);
+  const pvProt = (1-rr)*(1-Math.exp(-(lam+rf)*T));
+  const dig = cds/0.5;
+
+  let spreadTxt;
+  if (clnType === 'zc') {
+    const zcP = Math.exp(-rf*T)*(survT + rr*(1-survT));
+    spreadTxt = ((1/zcP-1)/T*100).toFixed(2) + '% YTM';
+  } else if (clnType === 'bon') {
+    const Tr = Math.min(5,T);
+    let pl = 0;
+    for (let i = 1; i <= Tr*freq; i++) {
+      const t = i*dt;
+      pl += Math.exp(-rf*t)*Math.exp(-lam*t)*dt;
+    }
+    let tl = 0;
+    for (let i = Tr*freq+1; i <= T*freq; i++) {
+      tl += Math.exp(-rf*i*dt)*dt;
+    }
+    tl *= Math.exp(-lam*Tr);
+    const g = (pl+tl) > 0 ? (1-Math.exp(-rf*T))/(pl+tl) : 0;
+    const swapR = sc > 0 ? (1-Math.exp(-rf*T))/sc : 0;
+    spreadTxt = '+' + Math.round((g-swapR)*10000) + 'bp vs swap';
+  } else {
+    spreadTxt = Math.round(fairS*10000) + ' bp';
+  }
+
+  document.getElementById('o-spread').textContent = spreadTxt;
+  document.getElementById('o-lam').textContent  = Math.round(lam*10000) + ' bp';
+  document.getElementById('o-surv').textContent = (survT*100).toFixed(1) + '%';
+  document.getElementById('o-dig').textContent  = Math.round(dig*10000) + ' bp';
+  document.getElementById('o-pvp').textContent  = (pvProt*100).toFixed(2) + '%';
+  document.getElementById('o-dv').textContent   = sc.toFixed(3);
+
+  // Chart: fair spread vs Recovery
+  const rRange = [0,10,20,30,40,50,60,70,80];
+  const spreads = rRange.map(R => {
+    const R_ = R/100;
+    const l_ = cds/(1-R_);
+    let sc_=0, sr_=0;
+    for(let i=1;i<=T*freq;i++){
+      const t=i*dt;
+      sc_+=Math.exp(-rf*t)*Math.exp(-(l_+lamI)*t)*dt;
+      sr_+=Math.exp(-rf*t)*R_*l_*Math.exp(-(l_+lamI)*(t-dt/2))*dt;
+    }
+    const pp_=Math.exp(-rf*T)*Math.exp(-(l_+lamI)*T);
+    return sc_>0?Math.round(((1-sr_-pp_)/sc_)*10000):0;
+  });
+
+  const ctx = document.getElementById('pricer-chart');
+  if (!ctx) return;
+  if (pricerChart) pricerChart.destroy();
+  pricerChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: rRange.map(r=>r+'%'),
+      datasets: [
+        { label: 'Fair Spread CLN', data: spreads, borderColor:'#c8ff00', backgroundColor:'rgba(200,255,0,.08)', fill:true, borderWidth:2, pointRadius:3, pointBackgroundColor:'#c8ff00' },
+        { label: 'CDS Spread ref', data: rRange.map(()=>Math.round(cds*10000)), borderColor:'#00c8ff', borderWidth:1, borderDash:[4,3], fill:false, pointRadius:0 }
+      ]
+    },
+    options: {
+      responsive:true,
+      plugins:{ title:{display:true,text:'Spread CLN vs Recovery Rate',color:'#e4e8f0',font:{size:11}}, legend:{labels:{color:'#6b7689',font:{size:10}}} },
+      scales:{
+        y:{grid:{color:'#1d2535'},ticks:{color:'#6b7689',font:{size:10}},title:{display:true,text:'bp',color:'#6b7689',font:{size:10}}},
+        x:{grid:{color:'#1d2535'},ticks:{color:'#6b7689',font:{size:10}},title:{display:true,text:'Recovery',color:'#6b7689',font:{size:10}}}
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════
+// MODULE CHARTS
+// ═══════════════════════════════════════════
+Chart.defaults.color = '#6b7689';
+Chart.defaults.font.family = "ui-monospace,monospace";
+Chart.defaults.font.size = 10;
+
+function renderHazChart() {
+  const lambdas = [100, 200, 333, 500];
+  const times = [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5];
+  const colors = ['#c8ff00','#00c8ff','#ff6b35','#ff3d5a'];
+  new Chart(document.getElementById('haz-chart'), {
+    type:'line',
+    data:{
+      labels: times,
+      datasets: lambdas.map((l,i) => ({
+        label:`λ=${l}bp (CDS=${Math.round(l*0.6)}bp, R=40%)`,
+        data: times.map(t=>Math.exp(-l/10000*t)*100),
+        borderColor:colors[i], fill:false, borderWidth:2, pointRadius:0
+      }))
+    },
+    options:{responsive:true,plugins:{title:{display:true,text:'Probabilité de Survie S(t)',color:'#e4e8f0'},legend:{labels:{color:'#6b7689'}}},scales:{y:{grid:{color:'#1d2535'},ticks:{color:'#6b7689'},title:{display:true,text:'S(t) %',color:'#6b7689'}},x:{grid:{color:'#1d2535'},ticks:{color:'#6b7689'},title:{display:true,text:'Années',color:'#6b7689'}}}}
+  });
+}
+
+function renderItraxxChart() {
+  new Chart(document.getElementById('itraxx-chart'), {
+    type:'bar',
+    data:{
+      labels:['Equity\n0-3%','Jr Mezz\n3-6%','Sr Mezz\n6-9%','Senior\n9-12%','Super Sr\n12-22%'],
+      datasets:[
+        {label:'EL% (ρ=20%)',data:[18,5.5,2,0.8,0.25],backgroundColor:['#ff3d5a88','#ffc74088','#ff6b3588','#00c8ff88','#c8ff0088'],borderColor:['#ff3d5a','#ffc740','#ff6b35','#00c8ff','#c8ff00'],borderWidth:2},
+        {label:'ρ implicite %',data:[15,22,30,40,55],type:'line',yAxisID:'y2',borderColor:'#c8ff00',borderWidth:2,pointRadius:4,pointBackgroundColor:'#c8ff00',fill:false}
+      ]
+    },
+    options:{responsive:true,plugins:{title:{display:true,text:'iTraxx 5Y — EL & Corrélation',color:'#e4e8f0'},legend:{labels:{color:'#6b7689'}}},scales:{y:{grid:{color:'#1d2535'},ticks:{color:'#6b7689'},title:{display:true,text:'EL (%)',color:'#6b7689'}},y2:{position:'right',grid:{drawOnChartArea:false},ticks:{color:'#c8ff00'},title:{display:true,text:'ρ (%)',color:'#c8ff00'}},x:{grid:{color:'#1d2535'},ticks:{color:'#6b7689'}}}}
+  });
+}
+
+function renderCopChart() {
+  // Loss distribution: low vs high correlation (schematic)
+  const labels = ['0%','5%','10%','15%','20%','25%','30%','35%','40%','50%','60%','75%','100%'];
+  const lowCorr = [0.35,0.28,0.15,0.08,0.05,0.03,0.02,0.01,0.01,0.005,0.003,0.001,0.0005];
+  const hiCorr  = [0.62,0.06,0.04,0.03,0.03,0.02,0.02,0.02,0.02,0.02,0.02,0.025,0.08];
+  new Chart(document.getElementById('cop-chart'), {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:'ρ=5% (indép.)',data:lowCorr,backgroundColor:'rgba(0,200,255,.5)',borderColor:'#00c8ff',borderWidth:1},
+        {label:'ρ=50% (corrélé)',data:hiCorr,backgroundColor:'rgba(255,61,90,.5)',borderColor:'#ff3d5a',borderWidth:1}
+      ]
+    },
+    options:{responsive:true,plugins:{title:{display:true,text:'Distribution des Pertes — Impact Corrélation',color:'#e4e8f0'},legend:{labels:{color:'#6b7689'}}},scales:{y:{grid:{color:'#1d2535'},ticks:{color:'#6b7689'},title:{display:true,text:'Probabilité',color:'#6b7689'}},x:{grid:{color:'#1d2535'},ticks:{color:'#6b7689',maxRotation:0,maxTicksLimit:7}}}}
+  });
+}
+
+function renderCorrChart() {
+  new Chart(document.getElementById('corr-chart'), {
+    type:'line',
+    data:{
+      labels:['3%','6%','9%','12%','22%'],
+      datasets:[
+        {label:'Base Correlation',data:[15,22,35,42,58],borderColor:'#c8ff00',fill:false,borderWidth:2,pointRadius:5,pointBackgroundColor:'#c8ff00'},
+        {label:'Compound Correlation',data:[12,20,25,38,55],borderColor:'#ff6b35',fill:false,borderWidth:2,borderDash:[4,3],pointRadius:5,pointBackgroundColor:'#ff6b35'}
+      ]
+    },
+    options:{responsive:true,plugins:{title:{display:true,text:'Smile de Corrélation iTraxx (schématique)',color:'#e4e8f0'},legend:{labels:{color:'#6b7689'}}},scales:{y:{grid:{color:'#1d2535'},ticks:{color:'#6b7689',callback:v=>v+'%'},title:{display:true,text:'ρ implicite',color:'#6b7689'}},x:{grid:{color:'#1d2535'},ticks:{color:'#6b7689'},title:{display:true,text:'Attachment point',color:'#6b7689'}}}}
+  });
+}
+
+// ═══════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════
+function openExport() { document.getElementById('export-modal').classList.add('open'); }
+function closeExport(e) {
+  if (!e || e.target === document.getElementById('export-modal')) {
+    document.getElementById('export-modal').classList.remove('open');
+  }
+}
+
+function downloadHTML() {
+  const html = document.documentElement.outerHTML;
+  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'CreditLab_InterviewPrep.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  closeExport();
+}
+
+async function shareFile() {
+  const html = document.documentElement.outerHTML;
+  const blob = new Blob([html], {type:'text/html'});
+  const file = new File([blob], 'CreditLab_InterviewPrep.html', {type:'text/html'});
+  if (navigator.share && navigator.canShare({files:[file]})) {
+    await navigator.share({files:[file], title:'CreditLab Interview Prep', text:'Mon guide dérivés crédit'});
+  } else {
+    downloadHTML();
+  }
+  closeExport();
+}
+
+function addToHomeScreen() {
+  closeExport();
+  alert('Sur Safari iOS : appuye sur le bouton Partager (carré avec flèche ↑) en bas, puis "Sur l\'écran d\'accueil". Sur Android Chrome : menu ⋮ → "Ajouter à l\'écran d\'accueil".');
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+renderHome();
+</script>
+</body>
+</html>
